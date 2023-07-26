@@ -1,4 +1,12 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/1829
+//카카오프랜즈 컬러링북
+
 import java.util.*;
+
+/**
+ * bfs로 인접한 같은 색상의 영역을 탐색 
+ * 방문한 곳은 visited로 구분
+ */
 
 class Solution {
     public int[] solution(int m, int n, int[][] picture) {
@@ -24,24 +32,24 @@ class Solution {
         int[] dx = {0, -1, 0, 1};
         int[] dy = {1, 0, -1, 0};
 
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(x * picture[0].length + y);
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{x, y});
         visited[x][y] = true;
 
         while (!queue.isEmpty()) {
-            int position = queue.poll();
-            int nx = position / picture[0].length;
-            int ny = position % picture[0].length;
+            int[] curr = queue.poll();
             areaSize++;
 
             for (int i = 0; i < 4; i++) {
-                int nnx = nx + dx[i];
-                int nny = ny + dy[i];
+                int nx = curr[0] + dx[i];
+                int ny = curr[1] + dy[i];
 
-                if (nnx >= 0 && nnx < picture.length && nny >= 0 && nny < picture[0].length) {
-                    if (picture[nnx][nny] == color && !visited[nnx][nny]) {
-                        queue.offer(nnx * picture[0].length + nny);
-                        visited[nnx][nny] = true;
+                if (nx >= 0 && nx < picture.length && ny >= 0 && ny < picture[0].length) {
+                    if (picture[nx][ny] == color) {
+                        if (!visited[nx][ny]) {
+                            queue.offer(new int[]{nx, ny});
+                            visited[nx][ny] = true;
+                        }
                     }
                 }
             }
@@ -50,3 +58,4 @@ class Solution {
         return areaSize;
     }
 }
+
