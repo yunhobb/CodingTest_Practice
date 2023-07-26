@@ -1,61 +1,56 @@
-//https://school.programmers.co.kr/learn/courses/30/lessons/1829
-//카카오프랜즈 컬러링북
+import java.util.LinkedList;
+import java.util.Queue;
 
-import java.util.*;
-
-/**
- * bfs로 인접한 같은 색상의 영역을 탐색 
- * 방문한 곳은 visited로 구분
- */
-
-class Solution {
-    public int[] solution(int m, int n, int[][] picture) {
-        boolean[][] visited = new boolean[m][n];
-        int[] answer = new int[2];
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (picture[i][j] != 0 && !visited[i][j]) {
-                    int areaSize = bfs(i, j, picture, visited);
-                    answer[0]++; 
-                    answer[1] = Math.max(answer[1], areaSize); 
-                }
-            }
-        }
-
-        return answer;
+public class Solution{
+    public static void main(String[] args){
+        int[] ans = solution(6, 4, new int[][]{{1, 1, 1, 0}, {1, 2, 2, 0}, {1, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 3}, {0, 0, 0, 3}});
+        System.out.println((ans[0] + " " + ans[1]));// [4, 5]
     }
+        public static int[] solution(int m, int n, int[][] picture) {
+            int[] answer = new int[]{0,0};
+            Queue<int[]> queue1 = new LinkedList<>();
+            Queue<int[]> queue2 = new LinkedList<>();
+            int x = 0, y = 0, nx = 0, ny = 0;
+            int [] dx = new int[]{-1,0,1,-1};
+            int [] dy = new int[]{0,1,0,-1};
+            int [][] visited = new int[m][n];
+            int color = 0;
+            int colorSize = 0;
+            queue1.add(new int[]{0,0});
 
-    public int bfs(int x, int y, int[][] picture, boolean[][] visited) {
-        int areaSize = 0;
-        int color = picture[x][y];
-        int[] dx = {0, -1, 0, 1};
-        int[] dy = {1, 0, -1, 0};
+            while (queue1.size()>0 || queue2.size()>0){
+                if (queue1.size() == 0)
+                    queue1.add(queue2.poll());
 
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[]{x, y});
-        visited[x][y] = true;
+                int [] pos = queue1.poll();
+                x = pos[0];
+                y = pos[1];
 
-        while (!queue.isEmpty()) {
-            int[] curr = queue.poll();
-            areaSize++;
+                if (visited[x][y] == 1) continue;
 
-            for (int i = 0; i < 4; i++) {
-                int nx = curr[0] + dx[i];
-                int ny = curr[1] + dy[i];
+                visited[x][y] = 1;
 
-                if (nx >= 0 && nx < picture.length && ny >= 0 && ny < picture[0].length) {
+                if (picture[x][y] != color && picture[x][y] > 0) {
+                    answer[1] = (colorSize > answer[1] ? colorSize : answer[1]);
+                    answer[0]++;
+                    colorSize = 1;
+                } else if (picture[x][y] == color && picture[x][y] > 0)
+                    colorSize++;
+                color = picture[x][y];
+
+
+                for (int i = 0; i < 4; i++) {
+                    nx = x + dx[i];
+                    ny = y + dy[i];
+                    if (nx < 0 || nx > m - 1 || ny < 0 || ny > n - 1 || visited[nx][ny] == 1) continue;
+
                     if (picture[nx][ny] == color) {
-                        if (!visited[nx][ny]) {
-                            queue.offer(new int[]{nx, ny});
-                            visited[nx][ny] = true;
-                        }
+                        queue1.add(new int[]{nx, ny});
+                    } else{ // 같은 색깔이 아닌 경우 또는 0인 경우
+                        queue2.add(new int[]{nx, ny});
                     }
                 }
             }
+            return answer;
         }
-
-        return areaSize;
-    }
 }
-
