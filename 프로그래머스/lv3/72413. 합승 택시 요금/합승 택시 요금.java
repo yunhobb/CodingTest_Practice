@@ -17,8 +17,6 @@ public class Solution {
         for(int i=0; i<n+1; i++){
             Arrays.fill(arr[i], MAX);
         }
-        
-      
 
         // 가중치를 배열에 표현
         for(int i = 0; i < fares.length; i++){
@@ -29,11 +27,6 @@ public class Solution {
                 arr[c][d] = weight;
                 arr[d][c] = weight;
             }
-        }
-        
-        // 자기 자신 초기화 
-        for(int i = 1; i <= n; i++) {
-            arr[i][i] = 0;
         }
 
         // 경로중 가중치가 작은 부분을 선별 
